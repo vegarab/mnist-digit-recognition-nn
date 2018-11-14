@@ -83,7 +83,11 @@ def best_network(train_images, train_labels, test_images, test_labels):
     network = models.Sequential()
 
     network.add(layers.Flatten(input_shape=train_images.shape[1:]))
-    network.add(layers.Dense(25, activation='relu'))
+    network.add(layers.Dense(256, activation='relu'))
+    network.add(layers.Dropout(0.25))
+    network.add(layers.Dense(256, activation='relu'))
+    network.add(layers.Dropout(0.25))
+    network.add(layers.Dense(256, activation='relu'))
     network.add(layers.Dropout(0.25))
     network.add(layers.Dense(10, activation='softmax'))
 
@@ -91,6 +95,9 @@ def best_network(train_images, train_labels, test_images, test_labels):
                     loss='categorical_crossentropy',
                     metrics=['accuracy'])
 
+    epochs = 10
+    network, history = fit_save_network(network, epochs, 'best')
+    visualization(network, history, epochs)
 
 def visualization(network, history, epochs):
     ''' Visulize loss and acurracy for a network '''
@@ -123,5 +130,5 @@ def visualization(network, history, epochs):
 
 if __name__ == '__main__':
     train_images, train_labels, test_images, test_labels = preprocess_dataset()
-    simple_network(train_images, train_labels, test_images, test_labels)
+    #simple_network(train_images, train_labels, test_images, test_labels)
     best_network(train_images, train_labels, test_images, test_labels)
