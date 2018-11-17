@@ -8,10 +8,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from sklearn.metrics import roc_curve
+from sklearn.metrics import auc
 from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
 import scikitplot as skplt
-from sklearn.metrics import roc_curve, auc, classification_report, confusion_matrix
-
 
 def preprocess_dataset():
     ''' Gather and process mnist-dataset '''
