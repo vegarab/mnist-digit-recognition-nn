@@ -8,6 +8,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+from sklearn.metrics import classification_report
+import scikitplot as skplt
+from sklearn.metrics import roc_curve, auc, classification_report, confusion_matrix
 
 
 def preprocess_dataset():
@@ -43,7 +46,7 @@ def simple_network(train_images, train_labels, test_images, test_labels):
                     loss='categorical_crossentropy',
                     metrics=['accuracy'])
     epochs = 15
-    network, history = fit_save_network(network, epochs, 'simple')
+    network, history = fit_save_network(network, epochs, 'best')
     visualization(network, history, epochs)
 
 def fit_save_network(network, epochs, name=None):
@@ -54,11 +57,13 @@ def fit_save_network(network, epochs, name=None):
         csv_logger = CSVLogger('{}.log'.format(str(name)), 
                                separator=',', 
                                append=False)
-        network.fit(train_images, train_labels,
+        history = network.fit(train_images, train_labels,
                   batch_size=128,
                   epochs=epochs,
                   validation_split = 0.25,
                   callbacks = [csv_logger])
+
+
         # serialize weights to HDF5
         network.save_weights('{}.h5'.format(str(name)))
         print('Saved model to disk')
@@ -97,7 +102,74 @@ def best_network(train_images, train_labels, test_images, test_labels):
 
     epochs = 10
     network, history = fit_save_network(network, epochs, 'best')
-    visualization(network, history, epochs)
+    #visualization(network, history, epochs)
+    visualize_precision_recall(network, epochs)
+
+def plot_classification_report(plotMat, classes):
+    ''' Plots the classification report from scikit-learn as a heatmap '''
+    title='Precision-recall report'
+    plt.imshow(plotMat, interpolation='nearest', cmap=plt.cm.Reds)
+    plt.title(title)
+    plt.colorbar()
+    x_tick_marks = np.arange(3)
+    y_tick_marks = np.arange(len(classes))
+    plt.xticks(x_tick_marks, ['precision', 'recall', 'f1-score'], rotation=45)
+    plt.yticks(y_tick_marks, classes)
+    plt.tight_layout()
+    plt.ylabel('Classes')
+    plt.xlabel('Measures')
+    plt.show()
+
+def visualize_precision_recall(network, epochs):
+    ''' Visualizes precision-recall in as a heatmap and showing the ROC-curve
+    ''' 
+    #test_score = history.decision_function(test_images)
+    pred = network.predict(test_images, batch_size=128, verbose=1)
+    predicted = np.argmax(pred, axis=1)
+    report = classification_report(np.argmax(test_labels, axis=1),
+            predicted)
+    probas = network.predict_proba(test_images)
+    print(report)
+
+    # need to do this again to get the dictionary for plots :S
+    report = classification_report(np.argmax(test_labels, axis=1), predicted,
+            output_dict=True)
+
+    plotMat = []
+    classes = [0,1,2,3,4,5,6,7,8,9]
+    for k, v in report.items():
+        l = []
+        l.append(v.get('precision'))
+        l.append(v.get('recall'))
+        l.append(v.get('f1-score'))
+        plotMat.append(l)
+    plot_classification_report(plotMat, classes)
+
+    # Compute ROC curve and ROC area for each class
+    fpr = dict()
+    tpr = dict()
+    roc_auc = dict()
+    for i in range(10):
+        fpr[i], tpr[i], _ = roc_curve(test_labels[:, i], probas[:, i])
+        roc_auc[i] = auc(fpr[i], tpr[i])
+
+
+    # Compute micro-average ROC curve and ROC area
+    fpr["micro"], tpr["micro"], _ = roc_curve(test_labels.ravel(),
+            probas.ravel())
+    roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+    plt.figure()
+    lw = 2
+    plt.plot(fpr[2], tpr[2], color='darkorange',
+             lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[2])
+    plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic curve')
+    plt.legend(loc="lower right")
+    plt.show()
 
 def visualization(network, history, epochs):
     ''' Visulize loss and acurracy for a network '''
