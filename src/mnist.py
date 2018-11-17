@@ -108,16 +108,16 @@ def best_network(train_images, train_labels, test_images, test_labels):
 def plot_classification_report(plotMat, classes):
     ''' Plots the classification report from scikit-learn as a heatmap '''
     title='Precision-recall report'
-    plt.imshow(plotMat, interpolation='nearest', cmap=plt.cm.Reds)
+    plt.imshow(plotMat, interpolation='nearest', cmap=plt.cm.Greens)
     plt.title(title)
-    plt.colorbar()
-    x_tick_marks = np.arange(3)
-    y_tick_marks = np.arange(len(classes))
-    plt.xticks(x_tick_marks, ['precision', 'recall', 'f1-score'], rotation=45)
-    plt.yticks(y_tick_marks, classes)
-    plt.tight_layout()
-    plt.ylabel('Classes')
-    plt.xlabel('Measures')
+    plt.colorbar(orientation='horizontal')
+    y_tick_marks = np.arange(3)
+    x_tick_marks = np.arange(len(classes))
+    plt.yticks(y_tick_marks, ['precision', 'recall', 'f1-score'], rotation=45)
+    plt.xticks(x_tick_marks, classes)
+    #plt.tight_layout()
+    plt.xlabel('Classes')
+    plt.ylabel('Measures')
     plt.show()
 
 def visualize_precision_recall(network, epochs):
@@ -137,12 +137,16 @@ def visualize_precision_recall(network, epochs):
 
     plotMat = []
     classes = [0,1,2,3,4,5,6,7,8,9]
+    precision = []
+    recall = []
+    f1 = []
     for k, v in report.items():
-        l = []
-        l.append(v.get('precision'))
-        l.append(v.get('recall'))
-        l.append(v.get('f1-score'))
-        plotMat.append(l)
+        precision.append(v.get('precision'))
+        recall.append(v.get('recall'))
+        f1.append(v.get('f1-score'))
+    plotMat.append(precision[:10])
+    plotMat.append(recall[:10])
+    plotMat.append(f1[:10])
     plot_classification_report(plotMat, classes)
 
     # Compute ROC curve and ROC area for each class
