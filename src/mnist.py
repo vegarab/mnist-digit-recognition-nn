@@ -54,8 +54,8 @@ def fit_save_network(network, epochs, name=None):
     ''' Fit and save a network, or load from disk '''
     print()
     network.summary()
-    if not os.path.isfile('{}.log'.format(str(name))) or not os.path.isfile('{}.h5'.format(str(name))):
-        csv_logger = CSVLogger('{}.log'.format(str(name)), 
+    if not os.path.isfile('{}.csv'.format(str(name))) or not os.path.isfile('{}.h5'.format(str(name))):
+        csv_logger = CSVLogger('{}.csv'.format(str(name)), 
                                separator=',', 
                                append=False)
         history = network.fit(train_images, train_labels,
@@ -70,7 +70,7 @@ def fit_save_network(network, epochs, name=None):
         print('Saved model to disk')
         history = network.history.history
     else:
-        log_data = pd.read_csv('{}.log'.format(str(name)), 
+        log_data = pd.read_csv('{}.csv'.format(str(name)), 
                                sep=',', 
                                engine='python')
         network.load_weights('{}.h5'.format(str(name)))
