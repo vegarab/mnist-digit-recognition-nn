@@ -207,5 +207,5 @@ def visualization(network, history, epochs):
 
 if __name__ == '__main__':
     train_images, train_labels, test_images, test_labels = preprocess_dataset()
-    #simple_network(train_images, train_labels, test_images, test_labels)
+    simple_network(train_images, train_labels, test_images, test_labels)
     best_network(train_images, train_labels, test_images, test_labels)
