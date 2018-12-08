@@ -14,8 +14,11 @@ FCNNs using Keras and the Tensorflow backend. It always serves as a playground
 for testing out more advanced features such as data augmentation etc.. 
 
 ## Solution
-The solution can be found in a documented Jupyter Notebook in
-`docs/mnist-project.ipynb`. The full source is found in `src/mnist.py`.
+The solution can be found in a documented 
+[Jupyter Notebook](https://github.com/vegarab/mnist-digit-recognition-nn/blob/master/docs/mnist-project.ipynb) 
+in `docs/mnist-project.ipynb`. The full source is found in `src/mnist.py`.
+
+A full evaluation of the models used are found in the notebook.
 
 ## How to run
 ```
