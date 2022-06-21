@@ -10,7 +10,7 @@ Keras-Preprocessing==1.0.5
 Markdown==3.0.1
 mkl-fft==1.0.6
 mkl-random==1.0.1
-numpy==1.15.3
+numpy==1.22.0
 protobuf==3.6.0
 PyYAML==3.13
 scipy==1.1.0
