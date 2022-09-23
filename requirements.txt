@@ -11,7 +11,7 @@ Markdown==3.0.1
 mkl-fft==1.0.6
 mkl-random==1.0.1
 numpy==1.15.3
-protobuf==3.6.0
+protobuf==3.18.3
 PyYAML==3.13
 scipy==1.1.0
 six==1.11.0
